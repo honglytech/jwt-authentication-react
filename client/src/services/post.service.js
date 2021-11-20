@@ -1,14 +1,18 @@
-import axios from "axios";
-import authHeader from "./auth-header";
+import api from "./api";
+// import axios from "axios";
+// import authHeader from "./auth-header";
 
-const API_URL = "/posts";
+// const API_URL = "/posts";
 
 const getAllPublicPosts = () => {
-  return axios.get(API_URL + "/public");
+  return api.get("/posts/public");
 };
 
+// const getAllPrivatePosts = () => {
+//   return axios.get(API_URL + "/private", { headers: authHeader() });
+// };
 const getAllPrivatePosts = () => {
-  return axios.get(API_URL + "/private", { headers: authHeader() });
+  return api.get("/posts/private");
 };
 
 const postService = {

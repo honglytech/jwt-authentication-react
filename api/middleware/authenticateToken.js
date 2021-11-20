@@ -29,7 +29,7 @@ const authToken = async (req, res, next) => {
     res.status(403).json({
       errors: [
         {
-          msg: "Invalid token",
+          msg: "Invalid or expired access token",
         },
       ],
     });

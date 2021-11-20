@@ -1,16 +1,20 @@
-import axios from "axios";
+import api from "./api";
+import TokenService from "./token.service";
 
-const API_URL = "/auth";
+// import axios from "axios";
+
+// const API_URL = "/auth";
 
 const signup = (email, password) => {
-  return axios
-    .post(API_URL + "/signup", {
+  return api
+    .post("/auth/signup", {
       email,
       password,
     })
     .then((response) => {
       if (response.data.accessToken) {
-        localStorage.setItem("user", JSON.stringify(response.data));
+        // localStorage.setItem("user", JSON.stringify(response.data));
+        TokenService.setUser(response.data);
       }
 
       return response.data;
@@ -18,14 +22,15 @@ const signup = (email, password) => {
 };
 
 const login = (email, password) => {
-  return axios
-    .post(API_URL + "/login", {
+  return api
+    .post("/auth/login", {
       email,
       password,
     })
     .then((response) => {
       if (response.data.accessToken) {
-        localStorage.setItem("user", JSON.stringify(response.data));
+        // localStorage.setItem("user", JSON.stringify(response.data));
+        TokenService.setUser(response.data);
       }
 
       return response.data;
@@ -33,7 +38,8 @@ const login = (email, password) => {
 };
 
 const logout = () => {
-  localStorage.removeItem("user");
+  // localStorage.removeItem("user");
+  TokenService.removeUser();
 };
 
 const getCurrentUser = () => {

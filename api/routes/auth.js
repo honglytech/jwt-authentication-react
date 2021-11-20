@@ -62,12 +62,21 @@ router.post(
       { email },
       process.env.ACCESS_TOKEN_SECRET,
       {
+        expiresIn: "10s",
+      }
+    );
+
+    const refreshToken = await JWT.sign(
+      { email },
+      process.env.REFRESH_TOKEN_SECRET,
+      {
         expiresIn: "1m",
       }
     );
 
     res.json({
       accessToken,
+      refreshToken,
     });
   }
 );
@@ -122,7 +131,7 @@ router.post("/login", async (req, res) => {
     { email },
     process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: "1m",
+      expiresIn: "10s",
     }
   );
 
@@ -131,7 +140,7 @@ router.post("/login", async (req, res) => {
     { email },
     process.env.REFRESH_TOKEN_SECRET,
     {
-      expiresIn: "5m",
+      expiresIn: "1m",
     }
   );
 
@@ -148,7 +157,10 @@ let refreshTokens = [];
 
 // Create new access token from refresh token
 router.post("/token", async (req, res) => {
-  const refreshToken = req.header("x-auth-token");
+  // const refreshToken = req.header("x-auth-token");
+  const refreshToken = req.body.refreshToken;
+
+  // console.log("refreshToken", refreshToken);
 
   // If token is not provided, send error message
   if (!refreshToken) {
@@ -182,7 +194,7 @@ router.post("/token", async (req, res) => {
     const accessToken = await JWT.sign(
       { email },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "1m" }
+      { expiresIn: "10s" }
     );
     res.json({ accessToken });
   } catch (error) {
