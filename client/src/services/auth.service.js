@@ -1,10 +1,11 @@
-import axios from "axios";
+import Axios from "axios";
 
 const API_URL = "/auth";
 
 const signup = (email, password) => {
-  return axios
-    .post(API_URL + "/signup", {
+  Axios.defaults.withCredentials = true;
+  return Axios
+    .post("http://localhost:5000" + API_URL + "/signup", {
       email,
       password,
     })
@@ -18,7 +19,7 @@ const signup = (email, password) => {
 };
 
 const login = (email, password) => {
-  return axios
+  return Axios
     .post(API_URL + "/login", {
       email,
       password,
