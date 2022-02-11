@@ -11,9 +11,14 @@ const getAllPrivatePosts = () => {
   return axios.get(API_URL + "/private", { headers: authHeader() });
 };
 
+const getUserdetails = () => {
+  return axios.get(API_URL + "/userdetails", { headers: authHeader() });
+};
+
 const postService = {
   getAllPublicPosts,
   getAllPrivatePosts,
+  getUserdetails,
 };
 
 export default postService;

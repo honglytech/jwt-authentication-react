@@ -1,8 +1,9 @@
-import React, { Component, useEffect } from "react";
+import React, { useEffect } from "react";
 import AuthService from "../services/auth.service";
 import {LoginRender} from "./loginOptions.render";
 
 import {
+  LOGIN_FAIL,
   LOGIN_REGISTER,
   LOGIN_REGISTERED,
   LOADING_DISPLAY
@@ -19,10 +20,12 @@ const VerifyLogin = () => {
     //console.log("query",queryString);
     const tokenDetails = await AuthService.checkLoginChallenge(queryString);
 
-    if(tokenDetails.registered)
+    if(tokenDetails?.registered)
       setUserData(LOGIN_REGISTERED);
-    else
+    else if(tokenDetails?.registered && tokenDetails)
       setUserData(LOGIN_REGISTER);
+    else
+      setUserData(LOGIN_FAIL);
 
   }, []);
  

@@ -5,7 +5,7 @@ var client = new Client({
   user: "verus",
   password: "password",
   database: "verus",
-  host: "localhost",
+  host: "192.168.1.121",
   port: 5432,
 });
 

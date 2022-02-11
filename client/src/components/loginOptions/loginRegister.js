@@ -1,13 +1,13 @@
 import React from "react";
-import {Link, useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-export default function LoginRegister({data}) {
+export default function LoginRegister({ data }) {
 
   const navigate = useNavigate();
 
-  const toHome=()=>{
-    navigate('/sign-up',{state:{data: data}});
-      }
+  const toHome = () => {
+    navigate('/sign-up', { state: { data: data } });
+  }
 
   return (
     <div>
