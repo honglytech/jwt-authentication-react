@@ -1,50 +1,55 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { Component, useEffect } from "react";
 import AuthService from "../services/auth.service";
+import {LoginRender} from "./loginOptions.render";
 
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+import {
+  LOGIN_REGISTER,
+  LOGIN_REGISTERED,
+  LOADING_DISPLAY
+} from '../constants/componentConstants'
 
-  const navigate = useNavigate();
+const VerifyLogin = () => {
+  
+  const [userData, setUserData] = React.useState(LOADING_DISPLAY);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      await AuthService.login(email, password).then(
-        () => {
-          navigate("/home");
-          window.location.reload();
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
-  return (
-    <div>
-      <form onSubmit={handleLogin}>
-        <h3>Login</h3>
-        <input
-          type="text"
-          placeholder="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">Log in</button>
-      </form>
-    </div>
-  );
+  useEffect(async () => {
+   
+    const queryString = window.location.search;
+    //console.log("query",queryString);
+    const tokenDetails = await AuthService.checkLoginChallenge(queryString);
+
+    if(tokenDetails.registered)
+      setUserData(LOGIN_REGISTERED);
+    else
+      setUserData(LOGIN_REGISTER);
+
+  }, []);
+ 
+return LoginRender(userData);
 };
 
-export default Login;
+export default VerifyLogin;
+
+
+/*
+const checkRegistered = async (data) => {
+  console.log("signature Result: ", data);
+
+  const userFound = await checkUser(data.signing_id);
+  console.log("User found?: ", userFound);
+  this.setState({ userData: data });
+
+  if (userFound) this.setState({ loginOption: LOGIN_REGISTERED });
+  else this.setState({ loginOption: LOGIN_REGISTER });
+};
+
+const checkLoginChallenge = async () => {
+  const { result, data } = await checkLogin();
+  if (result == SIGNATURE_INVALID) {
+    this.setState({ loginOption: LOGIN_FAIL });
+    return;
+  }
+
+  await checkRegistered(data);
+};*/
