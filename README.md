@@ -1,14 +1,18 @@
 # Verus Consent Login using Verus ID's ReactJS JWT Authentication
 
-cd api 
-npm install
-node index.js
+```cd api ```
+
+```npm install```
+
+```node index.js```
 
 In another terminal
 
-cd client
-npm install
-npm start
+`cd client`
+
+`npm install`
+
+`npm start`
 
 Then click on home
 
