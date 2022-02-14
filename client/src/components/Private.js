@@ -23,7 +23,7 @@ const Home = () => {
         }
       }
     );
-  }, []);
+  }, [navigate]);
 
   return (
     <div>

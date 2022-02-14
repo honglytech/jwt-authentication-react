@@ -65,16 +65,20 @@ function App() {
           </div>
         )}
       </nav>
-
       <div className="container mt-3">
-        <Routes>
-          <Route path="/home" element={<Home />} />
-          <Route path="/private" element={<Private />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-        </Routes>
+        <div className="auth-wrapper">
+          <div className="auth-inner">
+            <Routes>
+              <Route path="/home" element={<Home />} />
+              <Route path="/private" element={<Private />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+            </Routes>
+          </div>
+        </div>
       </div>
     </div>
+
   );
 }
 

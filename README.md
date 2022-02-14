@@ -1,5 +1,19 @@
-# ReactJS JWT Authentication
+# Verus Consent Login using Verus ID's ReactJS JWT Authentication
 
-Video: https://youtu.be/T5dIjye4b-I 
+```cd api ```
 
-Playlist: https://www.youtube.com/playlist?list=PL2adUX6Utt_2ushm0DDJ3fxiKypU44KZq
+```npm install```
+
+```node index.js```
+
+In another terminal
+
+`cd client`
+
+`npm install`
+
+`npm start`
+
+Then click on home
+
+Make sure the Verus Desktop is running and in sync

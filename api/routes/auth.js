@@ -3,6 +3,15 @@ const { check, validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 const JWT = require("jsonwebtoken");
 const { users } = require("../database");
+const  verusLogin  = require("../utils/loginVerus");
+const {checkLogin}  = require("../utils/checkLogin");
+const {checkUser}  = require("../utils/database");
+
+const {
+  LOGIN_FAIL,
+  SIGNATURE_OK,
+  SIGNATURE_INVALID,
+} = require("../constants/componentConstants");
 
 require("dotenv").config();
 
@@ -84,43 +93,65 @@ router.get("/users", (req, res) => {
   res.json(users);
 });
 
+// Get Verus Login consent challenge
+
+router.get("/challenge", (req, res) => {
+
+  verusLogin().then((result) => res.json(result));
+
+});
+
 // Log in
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const challenge = req.body;
 
-  // Look for user email in the database
-  let user = users.find((user) => {
-    return user.email === email;
-  });
+  // Check user has signed with the correct ID
 
-  // If user not found, send error message
-  if (!user) {
+  const {result, data} = await checkLogin(challenge);
+
+  if(result == SIGNATURE_INVALID){
     return res.status(400).json({
+      loginOption: LOGIN_FAIL,
       errors: [
         {
-          msg: "Invalid credentials",
+          msg: "Invalid signature for ID",
         },
       ],
     });
   }
 
-  // Compare hased password with user password to see if they are valid
-  let isMatch = await bcrypt.compare(password, user.password);
+  // Check correct JWT signed response
+  let user ={};
+  try {
+      user = await JWT.verify(
+      data.decision?.request.challenge.login_challenge,
+      process.env.TOKEN_KEY
+    );
+  } catch (err) {
+    return res.status(401).send("Invalid Token");
+  }
 
-  if (!isMatch) {
-    return res.status(401).json({
+  // Check uuid in challenge is correct
+  if (user.uuid != data.decision?.request.challenge.uuid) {
+    return res.status(400).json({
+      loginOption: LOGIN_FAIL,
       errors: [
         {
-          msg: "Email or password is invalid",
+          msg: "Incorrect JWT Token",
         },
       ],
     });
   }
 
-  // Send JWT access token
+  // See if user is registered or not
+  const userFound = await checkUser(data.signing_id);
+  console.log("User found?: ", userFound)
+  
+
+  // Send new JWT access token
   const accessToken = await JWT.sign(
-    { email },
-    process.env.ACCESS_TOKEN_SECRET,
+    { id: data.signing_id },
+    process.env.TOKEN_KEY,
     {
       expiresIn: "1m",
     }
@@ -128,17 +159,18 @@ router.post("/login", async (req, res) => {
 
   // Refresh token
   const refreshToken = await JWT.sign(
-    { email },
-    process.env.REFRESH_TOKEN_SECRET,
+    { id: data.signing_id },
+    process.env.ACCESS_TOKEN_KEY,
     {
       expiresIn: "5m",
     }
   );
 
-  // Set refersh token in refreshTokens array
+  // Set refresh token in refreshTokens array
   refreshTokens.push(refreshToken);
 
   res.json({
+    registered: userFound,
     accessToken,
     refreshToken,
   });
